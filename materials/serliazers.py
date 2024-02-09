@@ -10,7 +10,5 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
-        models = Lesson
+        model = Lesson
         fields = '__all__'
-
-
