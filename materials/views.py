@@ -1,6 +1,4 @@
 from rest_framework import viewsets, generics
-from rest_framework.decorators import permission_classes
-
 from .models import Course, Lesson
 from .serliazers import CourseSerializer, LessonSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -23,7 +21,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         elif self.action == 'destroy':
             self.permission_classes = [IsAuthenticated, IsOwner, IsNotModer]
 
-        return [permission() for permission in permission_classes]
+        return [permission() for permission in self.permission_classes]
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
