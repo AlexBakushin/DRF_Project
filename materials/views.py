@@ -1,6 +1,11 @@
 from rest_framework import viewsets, generics
-from .models import Course, Lesson
-from .serliazers import CourseSerializer, LessonSerializer
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from .models import Course, Lesson, Subscription
+from .paginators import MaterialPaginator
+from .serliazers import CourseSerializer, LessonSerializer, SubscriptionSerializer
 from rest_framework.permissions import IsAuthenticated
 from materials.permissions import IsOwner, IsModer, IsOwnerOrModerator
 
@@ -9,6 +14,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     permission_classes = [IsAuthenticated]
+    pagination_class = MaterialPaginator
 
     def perform_create(self, serializer):
         new_course = serializer.save()
@@ -49,6 +55,7 @@ class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated, IsOwnerOrModerator]
+    pagination_class = MaterialPaginator
 
     def get_queryset(self):
         if self.request.user.is_staff:
@@ -71,3 +78,24 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
 class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated, ~IsModer & IsOwner]
+
+
+class SubscriptionView(APIView):
+    queryset = Course.objects.all()
+    serializer_class = SubscriptionSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        course_id = self.request.data.get('course')
+        course_item = get_object_or_404(Course, id=course_id)
+        subs_item = Subscription.objects.filter(user=user, course=course_item)
+
+        if subs_item.exists():
+            subs_item.delete()
+            message = 'Подписка удалена'
+        else:
+            Subscription.objects.create(user=user, course=course_item)
+            message = 'Подписка добавлена'
+
+        return Response({"message": message})
