@@ -39,6 +39,8 @@ class Subscription(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE,
                              verbose_name='Пользователь')
     course = models.ForeignKey(Course, verbose_name='Курс', on_delete=models.CASCADE)
+    price = models.PositiveIntegerField(verbose_name='Цена', default=5000)
+    is_paid = models.BooleanField(verbose_name='Оплачено', default=False)
 
     def __str__(self):
         return f'{self.user} - {self.course}'

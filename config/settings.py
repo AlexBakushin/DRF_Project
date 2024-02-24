@@ -16,7 +16,6 @@ from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ SECRET_KEY = 'django-insecure-z-m1%=tnp(7=!0*axa3ru8kbp!+)x@4zoe0-boch5f+*_rf^z0
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -43,6 +41,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework_simplejwt',
     'drf_yasg',
+    'corsheaders',
 
     'users',
     'materials',
@@ -56,6 +55,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -78,7 +80,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -90,7 +91,6 @@ DATABASES = {
         'PASSWORD': '2202'
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -110,7 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -120,7 +119,6 @@ TIME_ZONE = 'Asia/Yekaterinburg'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -137,8 +135,8 @@ STATICFILES_DIRS = (
 )
 
 AUTH_USER_MODEL = 'users.User'
-LOGIN_REDIRECT_URL = '/'        # Куда перебросит, когда залогинился
-LOGOUT_REDIRECT_URL = '/'      # Куда перебросит, когда разлогинился
+LOGIN_REDIRECT_URL = '/'  # Куда перебросит, когда залогинился
+LOGOUT_REDIRECT_URL = '/'  # Куда перебросит, когда разлогинился
 LOGIN_URL = '/materials/'
 
 REST_FRAMEWORK = {
@@ -158,3 +156,16 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+CORS_ALLOWED_ORIGINS = [
+    'https://read-only.example.com',
+    'https://read-and-write.example.com',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://read-and-write.example.com',
+]
+
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51OnPyFCPHpkv4RUq7ScQvVs4DJvICQbOnbNCTZHTw6QPI85oFBsfMkPws5bsvw8V4UQKTwMbHyy46vEkggCxlGtB00ikG4CiNr'
+STRIPE_SECRET_KEY = 'sk_test_51OnPyFCPHpkv4RUqfpYMU2Crxikq2d8wtfQ0Mlu1iqboBFOOcTNZA6DrTkzWspnj1uJyTVk0Ln5CqtGRw2YUIV9R00prYr3M45'
+STRIPE_API_VERSION = '2024-02-25'

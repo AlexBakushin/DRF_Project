@@ -18,6 +18,6 @@ class LessonAdmin(admin.ModelAdmin):
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'course')
+    list_display = ('user', 'course', 'price', 'is_paid',)
     list_filter = ('user',)
     search_fields = ('user',)

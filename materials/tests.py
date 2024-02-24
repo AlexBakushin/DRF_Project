@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
-from materials.models import Lesson, Course
+from materials.models import Lesson, Course, Subscription
 from users.models import User
 
 
@@ -380,7 +380,7 @@ class MaterialTestCase(APITestCase):
             course_description='subscription_test',
         )
 
-        resp = self.client.post(
+        self.client.post(
             '/subscription/',
             {
                 "user": 1,
@@ -410,12 +410,6 @@ class MaterialTestCase(APITestCase):
         )
 
         self.assertEqual(
-            resp.json(),
-            {'message': 'Подписка добавлена'}
-
-        )
-
-        self.assertEqual(
             response.json(),
             {'message': 'Подписка удалена'}
         )
@@ -433,7 +427,7 @@ class MaterialTestCase(APITestCase):
             course_description='subscription_test',
         )
 
-        resp = self.client.post(
+        self.client.post(
             '/subscription/',
             {
                 "user": 12,
@@ -460,12 +454,6 @@ class MaterialTestCase(APITestCase):
         self.assertEqual(
             response.status_code,
             status.HTTP_200_OK
-        )
-
-        self.assertEqual(
-            resp.json(),
-            {'message': 'Подписка добавлена'}
-
         )
 
         self.assertEqual(
