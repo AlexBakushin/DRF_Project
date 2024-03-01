@@ -16,6 +16,13 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
+    def __str__(self):
+        return f'{self.email}'
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
 
 class Payment(models.Model):
     PAYMENT_METHOD = [
@@ -29,3 +36,10 @@ class Payment(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', **NULLABLE)
     payment_amount = models.PositiveSmallIntegerField(verbose_name='Сумма платежа')
     payment_method = models.CharField(choices=PAYMENT_METHOD, verbose_name='Способ оплаты')
+
+    class Meta:
+        verbose_name = 'Платеж'
+        verbose_name_plural = 'Платежи'
+
+    def __str__(self):
+        return f'{self.user} - {self.payment_date}'

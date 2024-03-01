@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
-from materials.models import Lesson, Course, Subscription
+from materials.models import Lesson, Course
 from users.models import User
 
 

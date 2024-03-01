@@ -12,18 +12,22 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-z-m1%=tnp(7=!0*axa3ru8kbp!+)x@4zoe0-boch5f+*_rf^z0'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG',) == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -87,8 +91,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'bd_drf',
-        'USER': 'postgres',
-        'PASSWORD': '2202'
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
     }
 }
 
@@ -166,6 +170,29 @@ CSRF_TRUSTED_ORIGINS = [
     'https://read-and-write.example.com',
 ]
 
-STRIPE_PUBLISHABLE_KEY = 'pk_test_51OnPyFCPHpkv4RUq7ScQvVs4DJvICQbOnbNCTZHTw6QPI85oFBsfMkPws5bsvw8V4UQKTwMbHyy46vEkggCxlGtB00ikG4CiNr'
-STRIPE_SECRET_KEY = 'sk_test_51OnPyFCPHpkv4RUqfpYMU2Crxikq2d8wtfQ0Mlu1iqboBFOOcTNZA6DrTkzWspnj1uJyTVk0Ln5CqtGRw2YUIV9R00prYr3M45'
-STRIPE_API_VERSION = '2024-02-25'
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+CACHE_ENABLED = os.getenv('CACHE_ENABLED',) == 'True'
+
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv("caches_location"),
+        }
+    }
+
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL')
+
+CELERY_TIMEZONE = 'Asia/Yekaterinburg'
+
+CELERY_TASK_TRACK_STARTED = True
+

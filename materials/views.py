@@ -9,6 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from materials.permissions import IsOwner, IsModer, IsOwnerOrModerator
 from .services import get_session
 from drf_yasg.utils import swagger_auto_schema
+from .tasks import update_notification
+from users.models import User
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -53,6 +55,20 @@ class CourseViewSet(viewsets.ModelViewSet):
 
         return [permission() for permission in self.permission_classes]
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        users_id_sub = Subscription.objects.filter(course=instance).values_list('user', flat=True)
+        for user_id in users_id_sub:
+            user_email = User.objects.get(id=user_id).email
+            course_name = instance.course_name
+            update_notification.delay(user_email=user_email, course_name=course_name)
+
+        return Response(serializer.data)
+
 
 class LessonCreateAPIView(generics.CreateAPIView):
     """
@@ -63,7 +79,7 @@ class LessonCreateAPIView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         """
-        При создании owner - пользователь
+        При создании, owner - пользователь
         """
         new_lesson = serializer.save()
         new_lesson.owner = self.request.user
