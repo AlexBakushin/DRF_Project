@@ -12,6 +12,7 @@ class User(AbstractUser):
     avatar = models.ImageField(upload_to='users/', verbose_name='Аватар', **NULLABLE)
     telephone = models.CharField(max_length=15, verbose_name='Телефон')
     town = models.CharField(max_length=50, verbose_name='Город', **NULLABLE)
+    last_login = models.DateTimeField(default=datetime.datetime.now(), verbose_name='Дата последнего входа')
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

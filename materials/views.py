@@ -140,7 +140,7 @@ class SubscriptionView(APIView):
 
     @swagger_auto_schema(operation_description="Если нет - создает, если есть - удаляет модель Subscription",
                          responses={200: SubscriptionSerializer(many=True)})
-    def post(self, request, *args, **kwargs):
+    def post(self):
         user = self.request.user
         course_id = self.request.data.get('course')
         course_item = get_object_or_404(Course, id=course_id)
@@ -169,7 +169,7 @@ class SubscriptionSuccessView(APIView):
     @swagger_auto_schema(operation_description="Переводит поле 'is_paid' модели 'Subscription' в положение 'True'"
                                                "и выводит поздравительное сообщение",
                          responses={200: SubscriptionSerializer(many=True)})
-    def get(self, request, *args, **kwargs):
+    def get(self):
         user = self.request.user
         course_id = self.request.data.get('course')
         course_item = get_object_or_404(Course, id=course_id)
